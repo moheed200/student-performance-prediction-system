@@ -8,13 +8,8 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 
-# ----------- LOGIN SYSTEM ------------
 users = {
-    "moheed": "ali",
-    "vansh": "sharma",
-    "arthav": "gupta",
-    "ayon": "das",
-    "somil": "dadwal"
+    "moheed": "ali"
 }
 
 def login():
@@ -34,7 +29,6 @@ def login():
 if not login():
     exit()
 
-# -------------------- DATA LOADING --------------------
 df = pd.read_csv("StudentsPerformance.csv")
 
 print(" First 5 Records:\n")
@@ -46,7 +40,6 @@ print(df.info())
 print("\n Statistical Summary:\n")
 print(df.describe())
 
-# -------------------- VISUALIZATIONS --------------------
 plt.figure(figsize=(6, 5))
 sns.boxplot(x='gender', y='math score', data=df, palette='Set2')
 plt.title('Gender-wise Math Score Distribution')
@@ -61,14 +54,12 @@ plt.ylabel('Writing Score')
 plt.tight_layout()
 plt.show()
 
-# -------------------- DATA ENCODING --------------------
 df_encoded = df.copy()
 label_encoder = LabelEncoder()
 
 for column in df_encoded.select_dtypes(include='object'):
     df_encoded[column] = label_encoder.fit_transform(df_encoded[column])
 
-# -------------------- TRAINING MODEL --------------------
 X = df_encoded.drop(columns=['math score'])
 y = df_encoded['math score']
 
@@ -77,7 +68,6 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 model = LinearRegression()
 model.fit(X_train, y_train)
 
-# -------------------- EVALUATION --------------------
 y_pred = model.predict(X_test)
 
 r2 = r2_score(y_test, y_pred)
@@ -87,7 +77,6 @@ print("\n Model Performance:")
 print(f"R² Score: {r2:.2f}")
 print(f"Mean Squared Error: {mse:.2f}")
 
-# -------------------- PREDICTIONS --------------------
 compare_df = pd.DataFrame({
     'Actual': y_test.values,
     'Predicted': y_pred
@@ -96,7 +85,7 @@ compare_df = pd.DataFrame({
 print("\n Sample Predictions:\n")
 print(compare_df.head(10))
 
-# -------------------- PLOTS --------------------
+
 plt.figure(figsize=(6, 5))
 sns.scatterplot(x='Actual', y='Predicted', data=compare_df, alpha=0.7)
 plt.plot([0, 100], [0, 100], '--', color='red')
